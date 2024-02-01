@@ -18,11 +18,20 @@ def calculate_overall_scores(data):
     data[name_column] = data[name_column].astype(str)
     
     start_time_column = 'Start time'
+    completion_time_column = 'Completion time'
+    
     if start_time_column in data.columns:
         data[start_time_column] = pd.to_datetime(data[start_time_column], errors='coerce')
+        data[start_time_column] = data[start_time_column].dt.strftime('%Y-%m-%d %H:%M:%S')  # Adjust the format as needed
+
+    if completion_time_column in data.columns:
+        data[completion_time_column] = pd.to_datetime(data[completion_time_column], errors='coerce')
+        data[completion_time_column] = data[completion_time_column].dt.strftime('%Y-%m-%d %H:%M:%S')  # Adjust the format as needed
+
     numeric_columns = data.select_dtypes(include=[np.number]).columns
     data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
     data['Overall_Score'] = data[numeric_columns].sum(axis=1)
+    
     return data
 
 def identify_exceptional_cases(data):
